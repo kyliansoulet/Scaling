@@ -1,0 +1,39 @@
+name: API
+
+on:
+  push:
+    branches: [main]
+    paths: ["api/**", ".github/workflows/api.yml"]
+  pull_request:
+    paths: ["api/**", ".github/workflows/api.yml"]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: api
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: coco
+          POSTGRES_PASSWORD: coco
+          POSTGRES_DB: coco_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U coco" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgresql://coco:coco@localhost:5432/coco_test
+      JWT_SECRET: ci-secret
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version-file: api/.python-version
+          cache: pip
+          cache-dependency-path: api/requirements*.txt
+      - run: pip install -r requirements-dev.txt
+      - run: ruff check app tests
+      - run: alembic upgrade head && alembic downgrade base
+      - run: pytest -q
