@@ -1,3 +1,4 @@
+# CI de l'API : ruff, migrations Alembic et pytest sur PostgreSQL
 name: API
 
 on:
