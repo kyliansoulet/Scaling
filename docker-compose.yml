@@ -1,0 +1,14 @@
+# Reproduit la prod en local : PostgreSQL (jamais SQLite).
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: coco
+      POSTGRES_PASSWORD: coco
+      POSTGRES_DB: coco_notes
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+volumes:
+  pgdata:
