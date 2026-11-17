@@ -1,3 +1,4 @@
+# CI du client : typecheck, tests vitest et build Vite
 name: Client
 
 on:
